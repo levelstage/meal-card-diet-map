@@ -1,8 +1,28 @@
 const express = require('express');
+const path = require('path');
 const app = express();
+const port = 3000;
 
-// public/ 폴더 정적 파일 서빙
-// JSON 요청 바디 파싱
-// routes 연결: /api/stores, /api/menus, /api/nutrition
-// DB 초기화 (db/init.js)
-// 3000번 포트로 서버 시작
+const menus = require("./routes/menus");
+const nutrition = require("./routes/nutrition");
+const stores = require("./routes/stores");
+
+app.use('/api/menus', menus);
+app.use('/api/nutritions', nutrition);
+app.use('/api/stores', stores);
+
+app.get(['/', '/map'],(req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'map.html'));
+});
+
+app.get('/menu', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'menu.html'));
+})
+
+app.get('/store',(req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'store.html'));
+});
+
+app.use(express.static('public'));
+
+app.listen(port);
