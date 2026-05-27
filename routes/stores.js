@@ -6,8 +6,8 @@ const config = require('../config_server');
 let store_cache = [];
 let isDataLoaded = false;
 
-function loadStoresToCache() {
-    console.log("전국아동복지급식정보 API 요청 및 캐시 적재 중...");
+console.log("전국아동복지급식정보 API 요청 및 캐시 적재 중...");
+function loadStoresToCache(page) {
     
     // API fetch용 URL 조립
     const baseUrl = "https://api.data.go.kr/openapi/tn_pubr_public_chil_wlfare_mlsv_api";
@@ -15,7 +15,7 @@ function loadStoresToCache() {
 
     const queryParams = new URLSearchParams({
         serviceKey: SERVICE_KEY,
-        pageNo: '1',
+        pageNo: String(page),
         numOfRows: '1000',
         type: 'json'
     });
@@ -31,26 +31,36 @@ function loadStoresToCache() {
         return response.json();
     })
     .then((json) => {
-        const rawItems = json.response.body.items;
+        const rawItems = json.response?.body?.items;
+
+        if (!rawItems || !Array.isArray(rawItems) || rawItems.length === 0) {
+                console.log(`데이터 총 ${temp_cache.length}개 적재 완료.`);
+                // 완벽하게 다 모인 덩어리를 메인 캐시에 스왑(교체)
+                isDataLoaded = true;
+                return;
+        }
+
+        if (rawItems && Array.isArray(rawItems)) {
         // 데이터에 고유 식별용 키가 없으므로 강제로 부여
         // 로드될때마다 변경되지 않도록 도로명주소 + 상호명으로 고정
-        store_cache = rawItems.map((store, index) => {
+        store_cache = store_cache.concat(rawItems.map((store, index) => {
             const trimmedName = store.mrhstNm.replace(/\s/g, '');
             const trimmedAddress = store.rdnmadr.replace(/\s/g, '');
             return {
                 id: `${trimmedName}_${trimmedAddress}`,
                 ...store
             }
-        });
+        }));
 
-        isDataLoaded = true;
-        console.log("캐싱 성공.");
+        console.log(`${String(page)} page 적재 성공.`);
+        }
+        loadStoresToCache(page+1)
     })
     .catch((err) => {
         console.error(err.message);
     });
 }
-loadStoresToCache();
+loadStoresToCache(1);
 
 // [GET] 현재 지도 중심 좌표 기준 주변 가게 id 목록을 json으로 반환 반환
 // 요청 주소 예시: GET /api/stores?lat=37.5665&lng=126.9780
