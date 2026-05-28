@@ -45,13 +45,12 @@ function loadStoresFrom(page) {
     const SERVICE_KEY = config.PUBLIC_DATA_API_KEY;
 
     const queryParams = new URLSearchParams({
-        serviceKey: SERVICE_KEY,
         pageNo: String(page),
         numOfRows: '1000',
         type: 'json'
     });
 
-    const targetUrl = `${baseUrl}?${queryParams.toString()}`;
+    const targetUrl = `${baseUrl}?serviceKey=${SERVICE_KEY}&${queryParams.toString()}`;
 
     // 조립 완료한 URL 발사
     fetch(targetUrl)

@@ -7,12 +7,12 @@ const config = require('../config_server');
 // 메뉴명으로 검색 → 검색된 모든 DB상 메뉴명, 칼로리, 탄수화물, 단백질, 지방 배열 반환
 
 router.get('/', (req, res) => {
-    const baseUrl = 'https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02';
+    const baseUrl = 'https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/getFoodNtrCpntDbInq02';
     const SERVICE_KEY = config.MFDS_API_KEY;
     const queryParams = new URLSearchParams({
         serviceKey: SERVICE_KEY,
         pageNo: '1',
-        numOfRows: '1000',
+        numOfRows: '500',
         type: 'json',
         FOOD_NM_KR: req.query.name
 
@@ -27,9 +27,9 @@ router.get('/', (req, res) => {
         return response.json();
     })
     .then((json) => {
-        const rawItems = json.response?.body?.items;
-        if (!rawItems || !Array.isArray(rawItems) || rawItems.length === 0) {
-            res.status(404).send("DATA NOT FOUND");
+        const rawItems = json.body?.items ?? [];
+        if (rawItems.length === 0) {
+            return res.status(404).send("DATA NOT FOUND");
         }
         else {
             let result = rawItems.map((item) =>{

@@ -9,6 +9,7 @@ const menus = require("./routes/menus");
 const nutrition = require("./routes/nutrition");
 const stores = require("./routes/stores");
 
+app.use(express.json());
 app.use('/api/loadStores', loadStores);
 app.use('/api/menus', menus);
 app.use('/api/nutritions', nutrition);
