@@ -3,10 +3,12 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+const loadStores = require("./routes/loadStores");
 const menus = require("./routes/menus");
 const nutrition = require("./routes/nutrition");
 const stores = require("./routes/stores");
 
+app.use('/api/loadStores', loadStores);
 app.use('/api/menus', menus);
 app.use('/api/nutritions', nutrition);
 app.use('/api/stores', stores);
