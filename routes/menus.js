@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Database = require('better-sqlite3');
-const db = new Database('menus.db');
+const db = new Database('menus.db', { verbose: console.log });
 
 // GET /api/menus?storeId=
 // db/init.js의 DB 인스턴스로 menus 테이블에서 해당 가맹점 메뉴 조회 후 반환
