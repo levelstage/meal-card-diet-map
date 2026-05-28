@@ -183,11 +183,11 @@ router.get('/LoadFrom', (req, res) => {
     }
 });
 
-router.get('/PageCount', (req, res)=>{
+router.get('/RowCount', (req, res)=>{
     try {
         // COUNT(*) 구문에 AS total 별칭 부여 및 응답 매핑
         const result = db.prepare('SELECT COUNT(*) AS total FROM stores;').get();
-        res.json({ pageCount: result.total / 1000});
+        res.json({ pageCount: result.total });
     } catch (err) {
         console.error(err);
         res.status(500).send("행 개수 조회 실패");
