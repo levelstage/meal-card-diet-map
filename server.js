@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+require("./db/initMenus");
 const loadStores = require("./db/loadStores");
 const menus = require("./routes/menus");
 const nutrition = require("./routes/nutrition");
