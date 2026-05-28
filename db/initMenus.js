@@ -4,10 +4,11 @@ const db = new Database('stores.db');
 db.exec(`
     CREATE TABLE IF NOT EXISTS menus (
     storeId   TEXT,
-    menuNameame TEXT PRIMARY KEY,
+    menuName TEXT PRIMARY KEY,
     energy INT, 
     carb INT,
     prot INT,
-    fat INT
+    fat INT,
+    PRIMARY KEY (storeId, menuName)
     );
 `);
