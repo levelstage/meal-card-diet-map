@@ -5,10 +5,10 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS menus (
     storeId   TEXT,
     menuName  TEXT,
-    energy INT,
-    carb INT,
-    prot INT,
-    fat INT,
+    energy REAL,
+    carb REAL,
+    prot REAL,
+    fat REAL,
     PRIMARY KEY (storeId, menuName)
     );
 `);

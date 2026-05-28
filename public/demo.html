@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>API Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 24px; }
+    h1 { color: #58a6ff; margin-bottom: 24px; font-size: 1.4rem; }
+    .section { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .section h2 { font-size: 0.85rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .endpoint { color: #79c0ff; font-weight: bold; font-size: 1rem; margin-bottom: 14px; }
+    .method-get  { color: #3fb950; }
+    .method-post { color: #f78166; }
+    .row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+    label { color: #8b949e; font-size: 0.85rem; min-width: 80px; }
+    input {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 4px;
+      color: #c9d1d9; padding: 6px 10px; font-family: monospace; font-size: 0.9rem;
+      flex: 1; min-width: 160px;
+    }
+    input:focus { outline: none; border-color: #58a6ff; }
+    button {
+      background: #21262d; border: 1px solid #30363d; border-radius: 4px;
+      color: #c9d1d9; padding: 7px 16px; cursor: pointer; font-family: monospace;
+      font-size: 0.9rem; transition: border-color 0.15s;
+    }
+    button:hover { border-color: #58a6ff; color: #58a6ff; }
+    button.danger:hover { border-color: #f85149; color: #f85149; }
+    pre {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 4px;
+      padding: 12px; margin-top: 12px; overflow-x: auto; font-size: 0.82rem;
+      max-height: 320px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+      display: none;
+    }
+    .status-ok  { color: #3fb950; }
+    .status-err { color: #f85149; }
+    hr { border: none; border-top: 1px solid #21262d; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>API Demo</h1>
+
+  <!-- ── stores ── -->
+  <div class="section">
+    <h2>stores</h2>
+
+    <div class="endpoint"><span class="method-get">GET</span> /api/stores?lat=&amp;lng=</div>
+    <div class="row">
+      <label>lat</label><input id="s-lat" value="37.5596" />
+      <label>lng</label><input id="s-lng" value="126.9368" />
+      <button onclick="callApi('nearby')">요청</button>
+    </div>
+    <pre id="res-nearby"></pre>
+
+    <hr />
+
+    <div class="endpoint"><span class="method-get">GET</span> /api/stores/:id</div>
+    <div class="row">
+      <label>id</label><input id="s-id" placeholder="가게 id" />
+      <button onclick="callApi('storeDetail')">요청</button>
+    </div>
+    <pre id="res-storeDetail"></pre>
+  </div>
+
+  <!-- ── menus ── -->
+  <div class="section">
+    <h2>menus</h2>
+
+    <div class="endpoint"><span class="method-get">GET</span> /api/menus?storeId=</div>
+    <div class="row">
+      <label>storeId</label><input id="m-storeId" placeholder="가게 id" />
+      <button onclick="callApi('menuGet')">요청</button>
+    </div>
+    <pre id="res-menuGet"></pre>
+
+    <hr />
+
+    <div class="endpoint"><span class="method-post">POST</span> /api/menus</div>
+    <div class="row"><label>storeId</label><input id="m-post-storeId" placeholder="가게 id" /></div>
+    <div class="row"><label>menuName</label><input id="m-post-menuName" placeholder="메뉴명" /></div>
+    <div class="row">
+      <label>energy</label><input id="m-post-energy" type="number" placeholder="kcal" />
+      <label>carb</label><input id="m-post-carb" type="number" placeholder="g" />
+    </div>
+    <div class="row">
+      <label>prot</label><input id="m-post-prot" type="number" placeholder="g" />
+      <label>fat</label><input id="m-post-fat" type="number" placeholder="g" />
+    </div>
+    <div class="row"><button onclick="callApi('menuPost')">추가</button></div>
+    <pre id="res-menuPost"></pre>
+  </div>
+
+  <!-- ── nutritions ── -->
+  <div class="section">
+    <h2>nutritions</h2>
+
+    <div class="endpoint"><span class="method-get">GET</span> /api/nutritions?name=</div>
+    <div class="row">
+      <label>name</label><input id="n-name" placeholder="메뉴명 (예: 제육볶음)" />
+      <button onclick="callApi('nutrition')">검색</button>
+    </div>
+    <pre id="res-nutrition"></pre>
+  </div>
+
+  <script>
+    async function callApi(key) {
+      const map = {
+        nearby:      () => fetch(`/api/stores?lat=${v('s-lat')}&lng=${v('s-lng')}`),
+        storeDetail: () => fetch(`/api/stores/${encodeURIComponent(v('s-id'))}`),
+        menuGet:     () => fetch(`/api/menus?storeId=${encodeURIComponent(v('m-storeId'))}`),
+        menuPost:    () => fetch('/api/menus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            storeId:  v('m-post-storeId'),
+            menuName: v('m-post-menuName'),
+            energy:   Number(v('m-post-energy')),
+            carb:     Number(v('m-post-carb')),
+            prot:     Number(v('m-post-prot')),
+            fat:      Number(v('m-post-fat')),
+          })
+        }),
+        nutrition: () => fetch(`/api/nutritions?name=${encodeURIComponent(v('n-name'))}`),
+        rowCount:  () => fetch('/api/loadStores/RowCount'),
+        loadFrom:  () => fetch(`/api/loadStores/LoadFrom?pageNo=${v('l-pageNo')}`),
+        reload:    () => fetch('/api/loadStores/Reload'),
+      };
+
+      const pre = document.getElementById(`res-${key}`);
+      pre.style.display = 'block';
+      pre.className = '';
+      pre.textContent = '요청 중...';
+
+      try {
+        const res = await map[key]();
+        const text = await res.text();
+        let display;
+        try { display = JSON.stringify(JSON.parse(text), null, 2); }
+        catch { display = text; }
+        pre.textContent = `HTTP ${res.status}\n\n${display}`;
+        pre.className = res.ok ? 'status-ok' : 'status-err';
+      } catch (e) {
+        pre.textContent = `오류: ${e.message}`;
+        pre.className = 'status-err';
+      }
+    }
+
+    function v(id) { return document.getElementById(id).value; }
+  </script>
+</body>
+</html>
