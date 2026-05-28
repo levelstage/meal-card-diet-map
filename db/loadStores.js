@@ -3,7 +3,7 @@ const router = express.Router();
 const Database = require('better-sqlite3');
 const config = require('../config_server');
 
-const db = new Database('stores.db', { verbose: console.log });
+const db = new Database('stores.db');
 
 function appendStoresToDB(stores)
 {
@@ -64,7 +64,7 @@ function loadStoresFrom(page) {
     .then((json) => {
         let storeCache = [];
         const rawItems = json.response?.body?.items;
-
+        console.log('API 응답 샘플:', JSON.stringify(rawItems?.[0], null, 2));
         if (!rawItems || !Array.isArray(rawItems) || rawItems.length === 0) {
                 console.log(`데이터 총 ${page-1}페이지 적재 완료.`);
                 return;
@@ -73,40 +73,34 @@ function loadStoresFrom(page) {
         if (rawItems && Array.isArray(rawItems)) {
             // 데이터에 고유 식별용 키가 없으므로 강제로 부여
             // 로드될때마다 변경되지 않도록 도로명주소 + 상호명으로 고정
-            storeCache = rawItems.map((store, index) => {
-            const mrhstName = store['가맹점명'] || '';
-            const rdnmAddress = store['소재지도로명주소'] || '';
-            const trimmedName = mrhstName.replace(/\s/g, '');
-            const trimmedAddress = rdnmAddress.replace(/\s/g, '');
+            storeCache = rawItems.map((store) => {
+            const trimmedName = (store.mrhstNm || '').replace(/\s/g, '');
+            const trimmedAddress = (store.rdnmadr || '').replace(/\s/g, '');
 
             return {
-                // 공공데이터 포털의 규격을 그대로 쓰지만,
-                // weekdayOperColseHhmm -> weekdayOperCloseHhmm
-                // satOperOperOpenHhmm -> satOperOpenHhmm
-                // 다음과 같이 포털 상 오타는 수정했습니다.
                 id: `${trimmedName}_${trimmedAddress}`,
-                mrhstNm: store['가맹점명'],
-                mrhstCode: store['가맹점유형코드'],
-                ctprvn: store['시도명'],
-                signguNm: store['시군구명'],
-                signguCode: store['시군구코드'],
-                rdnmadr: store['소재지도로명주소'],
-                lnmadr: store['소재지지번주소'],
-                latitude: store['위도'] ? Number(store['위도']) : null,
-                longitude: store['경도'] ? Number(store['경도']) : null,
-                phoneNumber: store['전화번호'],
-                weekdayOperOpenHhmm: store['평일운영시작시각'],
-                WeekdayOperCloseHhmm: store['평일운영종료시각'],
-                satOperOpenHhmm: store['토요일운영시작시각'],
-                satOperCloseHhmm: store['토요일운영종료시각'],
-                holidayOperOpenHhmm: store['공휴일운영시작시각'],
-                holidayCloseOpenHhmm: store['공휴일운영종료시각'],
-                dlvrOperOpenHhmm: store['배달시작시각'],
-                dlvrCloseOpenHhmm: store['배달종료시각'],
-                institutionNm: store['관리기관명'],
-                institutionPhoneNumber: store['관리기관전화번호'],
-                referenceDate: store['데이터기준일자'],
-                instt_code: store['제공기관코드']
+                mrhstNm: store.mrhstNm,
+                mrhstCode: store.mrhstCode,
+                ctprvn: store.ctprvnNm,
+                signguNm: store.signguNm,
+                signguCode: store.signguCode,
+                rdnmadr: store.rdnmadr,
+                lnmadr: store.lnmadr,
+                latitude: store.latitude ? Number(store.latitude) : null,
+                longitude: store.longitude ? Number(store.longitude) : null,
+                phoneNumber: store.phoneNumber,
+                weekdayOperOpenHhmm: store.weekdayOperOpenHhmm,
+                WeekdayOperCloseHhmm: store.weekdayOperColseHhmm,  // API 오타: Colse
+                satOperOpenHhmm: store.satOperOperOpenHhmm,         // API 오타: 이중 Oper
+                satOperCloseHhmm: store.satOperCloseHhmm,
+                holidayOperOpenHhmm: store.holidayOperOpenHhmm,
+                holidayCloseOpenHhmm: store.holidayCloseOpenHhmm,
+                dlvrOperOpenHhmm: store.dlvrOperOpenHhmm,
+                dlvrCloseOpenHhmm: store.dlvrCloseOpenHhmm,
+                institutionNm: store.institutionNm,
+                institutionPhoneNumber: store.institutionPhoneNumber,
+                referenceDate: store.referenceDate,
+                instt_code: store.insttCode
             };
         });
 
