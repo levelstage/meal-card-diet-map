@@ -8,11 +8,29 @@
 </head>
 <body>
   <!-- 가맹점명 표시 영역 -->
+  <div id="store-name">불러오는 중...</div>
+  <div id="store-info"></div>
+  
   <!-- 메뉴 목록 (클릭 시 영양정보 펼침) -->
+  <div id="menu-list"></div>
+  
   <!-- 영양정보 카드 -->
+  <div id="nutrition-card" style="display: none">
+    <p id="nutrition-detial"></p>
+  </div>
+  
   <!-- "먹었어요" 버튼 → localStorage 저장 -->
+  <button id="ate-btn" style="display: none">먹었어요</button>
+  
   <!-- 새 메뉴 등록 폼 (메뉴명 입력 + 등록 버튼) -->
+  <div id="register-part">
+    <input id="search-input" type="text" placeholder="메뉴명 검색 (예:김밥)" />
+    <button id="search-btn">검색</button>
+    <div id="search-results"></div>
+  </div>
+  
   <!-- 뒤로가기 (map.html) -->
+  <button id="back-btn" onclick="location.href='/map'">지도로 돌아가기</button>
 
   <!-- store.js 로드 -->
   <script src="js/store.js"></script>
