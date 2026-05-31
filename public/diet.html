@@ -3,15 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>주간 식단</title>
-  <link rel=""stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script src="diet.js"></script>
 </head>
 <body>
-  <!-- 주간 영양소 차트 컨테이너 (d3.js 렌더링 대상) -->
-  <!-- 영양소 조언 메시지 영역 ("단백질이 부족해요" 등) -->
-  <!-- 하단 네비게이션 (지도 | 식단) -->
 
-  
+  <h1>주간 식단 분석</h1>
+
+  <!-- D3.js inserts SVG here -->
+  <div id="chart-container"></div>
+
+  <!-- Advice message -->
+  <div id="advice-container">
+    <p id="advice-message"></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="bottom-nav">
+    <a href="map.html">지도</a>
+    <a href="diet.html">식단</a>
+  </nav>
+
 </body>
 </html>
