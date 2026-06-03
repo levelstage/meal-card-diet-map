@@ -99,7 +99,7 @@ document.getElementById('ate-btn').addEventListener('click', ()=> {
     date: new Date().toISOString(),
     storeId: storeId;
     menuName: selectedMenu.menuName,
-    energy: selectedMenu.carb,
+    energy: selectedMenu.energy,
     prot: selectedMenu.prot,
     fat: selectedMenu.fat,};
 
