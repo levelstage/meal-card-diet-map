@@ -12,13 +12,6 @@
 
     <div id="map"></div>
 
-    <div class="radius-container">
-        <button class="radius-btn active" data-radius="200">200m</button>
-        <button class="radius-btn" data-radius="500">500m</button>
-        <button class="radius-btn" data-radius="1000">1km</button>
-        <button class="radius-btn" data-radius="all">전체</button>
-    </div>
-
     <button id="myLocationBtn" class="my-location-btn" title="현재 위치로 이동">🎯</button>
 
     <div class="store-list-container" id="storeList">
@@ -28,13 +21,25 @@
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-btn" onclick="location.href='/info'">내 정보</button>
         <button class="nav-btn active" onclick="location.href='/map'">지도</button>
-        <button class="nav-btn" onclick="location.href='/diet.html'">식단</button>
+        <button class="nav-btn" onclick="location.href='/diet'">식단</button>
     </div>
 
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ccbf31c016fd95d985cda05b201492ed"></script>
-    
-    <script src="/js/map.js"></script>
+    <script src="/config_client.js"></script>
+    <script>
+      (function () {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + CONFIG_CLIENT.KAKAO_API_KEY + '&autoload=false';
+        s.onload = function () {
+          kakao.maps.load(function () {
+            var mapScript = document.createElement('script');
+            mapScript.src = '/js/map.js';
+            document.body.appendChild(mapScript);
+          });
+        };
+        document.head.appendChild(s);
+      })();
+    </script>
 </body>
 </html>
