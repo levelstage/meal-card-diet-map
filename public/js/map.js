@@ -1,19 +1,3 @@
-/* 전체 공통 레이아웃 */
-
-/* 지도 컨테이너 */
-
-/* 가맹점 메뉴 목록 */
-
-/* 영양정보 카드 */
-
-/* d3.js 차트 */
-
-/* 하단 네비게이션 */
-
-
-
-
-// map.html.js 기초css (수정바람)
 // 1. DOM 객체 레퍼런스 선언 및 전역 데이터 보관용 변수 세팅
 const mapContainer = document.getElementById('map'); 
 const storeListContainer = document.getElementById('storeList');
