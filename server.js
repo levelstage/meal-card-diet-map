@@ -15,15 +15,19 @@ app.use('/api/menus', menus);
 app.use('/api/nutritions', nutrition);
 app.use('/api/stores', stores);
 
-app.get(['/', '/map'],(req, res) => {
+app.get('/config_client.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'config_client.js'));
+});
+
+app.get(['/', '/map'], (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'map.html'));
 });
 
-app.get('/menu', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'menu.html'));
-})
+app.get('/diet', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'diet.html'));
+});
 
-app.get('/store',(req, res) => {
+app.get('/store', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'store.html'));
 });
 
