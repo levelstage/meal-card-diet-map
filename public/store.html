@@ -2,37 +2,46 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>가맹점 상세</title>
-  <!-- style.css 로드 -->
-  <link rel="stylesheet" href="css/style.css"
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <!-- 가맹점명 표시 영역 -->
-  <div id="store-name">불러오는 중...</div>
-  <div id="store-info"></div>
-  
-  <!-- 메뉴 목록 (클릭 시 영양정보 펼침) -->
-  <div id="menu-list"></div>
-  
-  <!-- 영양정보 카드 -->
-  <div id="nutrition-card" style="display: none">
-    <p id="nutrition-detial"></p>
+
+  <!-- 패널 1: 가맹점 정보 -->
+  <div id="view-store">
+    <div id="store-name">불러오는 중...</div>
+    <div id="store-info"></div>
+    <button id="ate-btn">먹었어요</button>
   </div>
-  
-  <!-- "먹었어요" 버튼 → localStorage 저장 -->
-  <button id="ate-btn" style="display: none">먹었어요</button>
-  
-  <!-- 새 메뉴 등록 폼 (메뉴명 입력 + 등록 버튼) -->
-  <div id="register-part">
-    <input id="search-input" type="text" placeholder="메뉴명 검색 (예:김밥)" />
-    <button id="search-btn">검색</button>
+
+  <!-- 패널 2: 메뉴 목록 -->
+  <div id="view-menus" style="display:none">
+    <button id="back-to-store-btn">이전</button>
+    <div id="menu-list"></div>
+    <div id="meal-record-msg"></div>
+    <button id="add-menu-btn">메뉴 추가</button>
+  </div>
+
+  <!-- 패널 3: 메뉴 추가 -->
+  <div id="view-add-menu" style="display:none">
+    <button id="back-to-menus-btn">이전</button>
+    <div>
+      <label for="menu-name-input">메뉴 이름</label>
+      <input id="menu-name-input" type="text" placeholder="메뉴 이름 직접 입력" />
+    </div>
+    <div>
+      <input id="search-input" type="text" placeholder="영양성분 검색 (예: 김밥)" />
+      <button id="search-btn">검색</button>
+    </div>
     <div id="search-results"></div>
   </div>
-  
-  <!-- 뒤로가기 (map.html) -->
-  <button id="back-btn" onclick="location.href='/map'">지도로 돌아가기</button>
 
-  <!-- store.js 로드 -->
-  <script src="js/store.js"></script>
+  <nav class="bottom-nav">
+    <a href="/map">지도</a>
+    <a href="/diet">식단</a>
+  </nav>
+
+  <script src="/js/store.js"></script>
 </body>
 </html>
