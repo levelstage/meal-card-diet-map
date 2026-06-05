@@ -132,7 +132,7 @@ async function searchNutrition() {
 function renderSearchResults(menus) {
   const resultsDiv = document.getElementById('search-results');
   resultsDiv.innerHTML = '';
-
+  resultsDiv.className = '';
   if (!menus || menus.length === 0) {
     resultsDiv.textContent = '결과 없음';
     return;

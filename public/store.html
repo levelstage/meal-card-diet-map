@@ -20,28 +20,56 @@
 
   <!-- 패널 2: 메뉴 목록 -->
   <div id="view-menus" style="display:none">
-    <button id="back-to-store-btn">이전</button>
-    <div id="menu-list"></div>
-    <div id="meal-record-msg"></div>
-    <button id="add-menu-btn">메뉴 추가</button>
+    <div class="store-list-container fullheight fade-in">
+      <div class="addmenu">
+        <div id="menu-list"></div>
+      <div id="meal-record-msg"></div>
+      </div>
+      
+    <div class="buttonbtns">
+      <button class="icon-btn blink-1" id="back-to-store-btn">
+      <svg id="left-arrow" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="white" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+    </svg>
+    </button>
+    <button class="bottom-btn witharrow" id="add-menu-btn">메뉴 추가</button>
+    </div>
+    </div>
+    
   </div>
 
   <!-- 패널 3: 메뉴 추가 -->
+   
   <div id="view-add-menu" style="display:none">
-    <button id="back-to-menus-btn">이전</button>
-    <div>
-      <label for="menu-name-input">메뉴 이름</label>
-      <input id="menu-name-input" type="text" placeholder="메뉴 이름 직접 입력" />
+    <div class="store-list-container fullheight fade-in">
+      <button class="icon-btn blink-1" id="back-to-menus-btn">
+      <svg id="left-arrow" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="white" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+    </svg>
+  </button>
+    <div class="inputs">
+      <label class="inputlabel" for="menu-name-input">메뉴명: </label>
+      <input class="inputbox" id="menu-name-input" type="text" placeholder="저장할 메뉴의 이름" />
     </div>
-    <div>
-      <input id="search-input" type="text" placeholder="영양성분 검색 (예: 김밥)" />
-      <button id="search-btn">검색</button>
+    <div class="inputs">
+      <input class="inputbox" id="search-input" type="text" placeholder="사용할 영양성분 (예: 김밥)" />
+      <button class="icon-btn" style="width: 5rem;" id="search-btn">
+        <svg id="right-arrow" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="white" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+  <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+</svg>
+      </button>
     </div>
-    <div id="search-results"></div>
+    <div class="store-list-container container2 fade-in">
+      <div class="placeholder pulsate-fwd" id="search-results"></div>
+    </div>
+    
+    </div>
+    
   </div>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active fade-in" onclick="location.href='/map'">지도</button>
+  <nav class="bottom-nav fade-in-f">
+    <button class="nav-btn active" onclick="location.href='/map'">지도</button>
         <button class="nav-btn" onclick="location.href='/diet'">식단</button>
   </nav>
 
