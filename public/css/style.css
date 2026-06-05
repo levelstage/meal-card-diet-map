@@ -109,6 +109,27 @@ body, html {
     height: 360px; 
     bottom: 20px; 
 }
+
+/* 메뉴 나열용 store-list-container */
+.container3 {
+    height: calc(95% - 10rem); 
+    bottom: 5rem; 
+    
+}
+
+#meal-record-msg {
+    background: #e8f5e9; 
+    color: #2e7d32; 
+    border: none;
+    padding: 0.4rem 0.8rem; 
+    border-radius: 15px; 
+    font-size: 0.8rem; 
+    width:80%;
+    margin: auto;
+    height:4rem;
+    transition: all 0.2s ease;
+}
+
 /* store-list-container의 height를 늘린다 */
 .fullheight {
     height:calc(100% - 110px);

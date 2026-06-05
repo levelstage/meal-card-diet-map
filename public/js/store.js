@@ -71,6 +71,8 @@ function renderMenus(menus) {
 
   menus.forEach(menu => {
     const btn = document.createElement('button');
+    btn.className = "bottom-btn";
+    btn.style = "margin: 0 0 0.3rem 0;"
     btn.textContent = menu.menuName;
     btn.addEventListener('click', () => recordMeal(menu));
     list.appendChild(btn);
