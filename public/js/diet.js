@@ -2,10 +2,16 @@
 
 const history = JSON.parse(localStorage.getItem('mealHistory') || '[]');
 let weekOffset = 0;
+let dayOffset = 0;
+let viewMode = 'week'; // 'week' | 'day'
+
+const DAILY_THRESHOLDS = { energy: 2000, carb: 260, prot: 60, fat: 54 };
+const NUT_NAMES = { energy: '에너지', carb: '탄수화물', prot: '단백질', fat: '지방' };
+const NUT_UNITS = { energy: 'kcal', carb: 'g', prot: 'g', fat: 'g' };
 
 function getWeekBounds(offset) {
   const today = new Date();
-  const dow = today.getDay(); // 0=일
+  const dow = today.getDay();
   const monday = new Date(today);
   monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1) + offset * 7);
   monday.setHours(0, 0, 0, 0);
@@ -15,12 +21,43 @@ function getWeekBounds(offset) {
   return { monday, sunday };
 }
 
-function getMealsForOffset(offset) {
+function getDayBounds(offset) {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(today.getDate() + offset);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setHours(23, 59, 59, 999);
+  return { start, end };
+}
+
+function getMealsForWeekOffset(offset) {
   const { monday, sunday } = getWeekBounds(offset);
   return history.filter(r => {
     const d = new Date(r.date);
     return d >= monday && d <= sunday;
   });
+}
+
+function getMealsForDayOffset(offset) {
+  const { start, end } = getDayBounds(offset);
+  return history.filter(r => {
+    const d = new Date(r.date);
+    return d >= start && d <= end;
+  });
+}
+
+function getMealsForOffset(offset) {
+  return viewMode === 'week' ? getMealsForWeekOffset(offset) : getMealsForDayOffset(offset);
+}
+
+function getCurrentOffset() {
+  return viewMode === 'week' ? weekOffset : dayOffset;
+}
+
+function setCurrentOffset(val) {
+  if (viewMode === 'week') weekOffset = val;
+  else dayOffset = val;
 }
 
 function pad2(n) { return String(n).padStart(2, '0'); }
@@ -33,24 +70,81 @@ function formatDateTime(d) {
   return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
 
+function getPeriodLabel() {
+  if (viewMode === 'week') {
+    const { monday, sunday } = getWeekBounds(weekOffset);
+    return `${formatDate(monday)} ~ ${formatDate(sunday)}`;
+  }
+  const { start } = getDayBounds(dayOffset);
+  return formatDate(start);
+}
+
+function isCurrentPeriod() {
+  return (viewMode === 'week' && weekOffset === 0) || (viewMode === 'day' && dayOffset === 0);
+}
+
+function renderWarnings(meals) {
+  const container = document.getElementById('warning-container');
+  container.innerHTML = '';
+
+  if (isCurrentPeriod() || meals.length === 0) return;
+
+  const totals = { energy: 0, carb: 0, prot: 0, fat: 0 };
+  meals.forEach(r => {
+    totals.energy += Number(r.energy) || 0;
+    totals.carb   += Number(r.carb)   || 0;
+    totals.prot   += Number(r.prot)   || 0;
+    totals.fat    += Number(r.fat)    || 0;
+  });
+
+  const multiplier = viewMode === 'week' ? 7 : 1;
+  const warnings = [];
+
+  Object.keys(DAILY_THRESHOLDS).forEach(k => {
+    const threshold = DAILY_THRESHOLDS[k] * multiplier;
+    if (totals[k] < threshold * 0.8) {
+      warnings.push(
+        `${NUT_NAMES[k]}이(가) 부족해요! ` +
+        `(${Math.round(totals[k])}${NUT_UNITS[k]} / 권장 ${Math.round(threshold)}${NUT_UNITS[k]})`
+      );
+    }
+  });
+
+  if (warnings.length === 0) return;
+
+  const div = document.createElement('div');
+  div.style.cssText = 'margin:8px 0;padding:10px 14px;background:#fff3cd;border:1px solid #ffc107;border-radius:6px;font-size:13px;color:#856404;';
+  warnings.forEach(msg => {
+    const p = document.createElement('p');
+    p.style.margin = '4px 0';
+    p.textContent = msg;
+    div.appendChild(p);
+  });
+  container.appendChild(div);
+}
+
 function render() {
-  const { monday, sunday } = getWeekBounds(weekOffset);
-  const meals = getMealsForOffset(weekOffset);
+  const offset = getCurrentOffset();
+  const meals = getMealsForOffset(offset);
 
-  document.getElementById('week-label').textContent =
-    `${formatDate(monday)} ~ ${formatDate(sunday)}`;
+  document.getElementById('week-label').textContent = getPeriodLabel();
 
-  document.getElementById('prev-week-btn').disabled =
-    getMealsForOffset(weekOffset - 1).length === 0;
-  document.getElementById('next-week-btn').disabled =
-    getMealsForOffset(weekOffset + 1).length === 0;
+  document.getElementById('prev-week-btn').disabled = getMealsForOffset(offset - 1).length === 0;
+  document.getElementById('next-week-btn').disabled = getMealsForOffset(offset + 1).length === 0;
+
+  const dailyBtn = document.getElementById('daily-btn');
+  const weeklyBtn = document.getElementById('weekly-btn');
+  dailyBtn.style.fontWeight = viewMode === 'day' ? 'bold' : 'normal';
+  weeklyBtn.style.fontWeight = viewMode === 'week' ? 'bold' : 'normal';
 
   document.getElementById('chart-container').innerHTML = '';
   document.getElementById('timeline-container').innerHTML = '';
 
+  renderWarnings(meals);
+
   if (meals.length === 0) {
     const msg = document.createElement('p');
-    msg.textContent = '이번 주 식단 기록이 없습니다';
+    msg.textContent = viewMode === 'week' ? '이번 주 식단 기록이 없습니다' : '이 날 식단 기록이 없습니다';
     document.getElementById('chart-container').appendChild(msg);
     return;
   }
@@ -82,7 +176,6 @@ function renderGraph(meals) {
     nutTotals[k] = mealNames.reduce((sum, n) => sum + mealMap[n][k], 0);
   });
 
-  // 실제 픽셀 기반 — viewBox 스케일링 없이 그려야 모바일에서 텍스트가 안 쪼그라듦
   const container = document.getElementById('chart-container');
   const W = Math.max(container.clientWidth || 320, 280);
 
@@ -120,7 +213,6 @@ function renderGraph(meals) {
   const nutYs = nutLabels.map((_, i) =>
     PAD_V + (H - PAD_V * 2) / (nutLabels.length + 1) * (i + 1));
 
-  // 간선
   const links = [];
   mealNames.forEach((name, mi) => {
     nutKeys.forEach((key, ni) => {
@@ -148,7 +240,6 @@ function renderGraph(meals) {
     .attr('opacity', 0.35)
     .attr('marker-end', 'url(#arrowhead)');
 
-  // 식단 노드
   const maxLabelChars = Math.max(4, Math.floor((LEFT_X - MEAL_R - 8) / (FONT * 0.65)));
 
   const mealG = svg.selectAll('g.meal-node')
@@ -168,7 +259,6 @@ function renderGraph(meals) {
     .attr('font-size', FONT)
     .text(d => d.length > maxLabelChars ? d.slice(0, maxLabelChars - 1) + '…' : d);
 
-  // 영양성분 노드 — 원 옆에 이름+합계를 나란히 표시 (원 안에 텍스트 넣지 않음)
   const nutG = svg.selectAll('g.nut-node')
     .data(nutLabels)
     .enter()
@@ -221,11 +311,19 @@ function renderTimeline(meals) {
 }
 
 document.getElementById('prev-week-btn').addEventListener('click', () => {
-  weekOffset--;
+  setCurrentOffset(getCurrentOffset() - 1);
   render();
 });
 document.getElementById('next-week-btn').addEventListener('click', () => {
-  weekOffset++;
+  setCurrentOffset(getCurrentOffset() + 1);
+  render();
+});
+document.getElementById('daily-btn').addEventListener('click', () => {
+  viewMode = 'day';
+  render();
+});
+document.getElementById('weekly-btn').addEventListener('click', () => {
+  viewMode = 'week';
   render();
 });
 

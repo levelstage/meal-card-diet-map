@@ -103,6 +103,39 @@
     <pre id="res-nutrition"></pre>
   </div>
 
+  <!-- ── mealHistory localStorage ── -->
+  <div class="section">
+    <h2>mealHistory (localStorage)</h2>
+
+    <div class="row" style="gap:10px;flex-wrap:wrap;">
+      <button onclick="lsView()">현재 데이터 보기</button>
+      <button onclick="lsSeed()">시드 데이터 주입</button>
+      <button class="danger" onclick="lsClear()">초기화</button>
+    </div>
+    <pre id="res-ls"></pre>
+
+    <hr />
+
+    <div style="font-size:0.85rem;color:#8b949e;margin-bottom:12px;">단건 추가</div>
+    <div class="row">
+      <label>날짜</label>
+      <input id="ls-date" type="datetime-local" style="flex:2;" />
+    </div>
+    <div class="row">
+      <label>메뉴명</label>
+      <input id="ls-menu" placeholder="예: 제육볶음" />
+    </div>
+    <div class="row">
+      <label>energy</label><input id="ls-energy" type="number" placeholder="kcal" />
+      <label>carb</label><input id="ls-carb" type="number" placeholder="g" />
+    </div>
+    <div class="row">
+      <label>prot</label><input id="ls-prot" type="number" placeholder="g" />
+      <label>fat</label><input id="ls-fat" type="number" placeholder="g" />
+    </div>
+    <div class="row"><button onclick="lsAdd()">추가</button></div>
+  </div>
+
   <script>
     async function callApi(key) {
       const map = {
@@ -147,6 +180,183 @@
     }
 
     function v(id) { return document.getElementById(id).value; }
+
+    /* ── localStorage helpers ── */
+
+    // 날짜(Date)에 HH:MM을 더해 ISO 문자열 반환
+    function dateAt(base, hh, mm) {
+      const d = new Date(base);
+      d.setHours(hh, mm, 0, 0);
+      return d.toISOString();
+    }
+
+    // diet.js와 동일한 기준: 해당 주의 월요일 00:00 반환
+    function getMonday(date) {
+      const d = new Date(date);
+      const dow = d.getDay();
+      d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    // 요일 인덱스(0=월)로 메뉴 배열 순환 선택 — 매번 다른 음식이 나오게
+    function cycle(arr, idx) { return arr[idx % arr.length]; }
+
+    function lsSeed() {
+      // ── 식단 데이터 ──────────────────────────────────────────────
+      const breakfasts = [
+        { menuName: '토스트',     energy: 370, carb: 40, prot: 18, fat: 14 },
+        { menuName: '시리얼',     energy: 320, carb: 56, prot: 12, fat:  7 },
+        { menuName: '오트밀',     energy: 340, carb: 62, prot: 11, fat:  7 },
+        { menuName: '샌드위치',   energy: 420, carb: 46, prot: 20, fat: 16 },
+        { menuName: '계란밥',     energy: 470, carb: 68, prot: 20, fat: 12 },
+        { menuName: '그래놀라',   energy: 390, carb: 54, prot: 14, fat: 12 },
+        { menuName: '잡곡죽',     energy: 300, carb: 58, prot:  9, fat:  3 },
+      ];
+
+      const lunches = [
+        { menuName: '비빔밥',      energy: 620, carb: 94, prot: 20, fat: 13 },
+        { menuName: '제육볶음',    energy: 760, carb: 88, prot: 37, fat: 26 },
+        { menuName: '된장찌개',    energy: 520, carb: 80, prot: 22, fat: 11 },
+        { menuName: '순두부찌개',  energy: 500, carb: 76, prot: 25, fat: 11 },
+        { menuName: '돈까스',      energy: 890, carb: 98, prot: 34, fat: 40 },
+        { menuName: '볶음밥',      energy: 620, carb: 84, prot: 22, fat: 22 },
+        { menuName: '김치찌개',    energy: 530, carb: 78, prot: 26, fat: 13 },
+        { menuName: '냉면',        energy: 510, carb: 92, prot: 16, fat:  9 },
+        { menuName: '칼국수',      energy: 560, carb: 90, prot: 18, fat: 10 },
+        { menuName: '설렁탕',      energy: 600, carb: 76, prot: 32, fat: 18 },
+      ];
+
+      const dinners = [
+        { menuName: '삼겹살',   energy: 720, carb: 12, prot: 38, fat: 62 },
+        { menuName: '치킨',     energy: 820, carb: 44, prot: 42, fat: 42 },
+        { menuName: '갈비탕',   energy: 480, carb: 24, prot: 36, fat: 24 },
+        { menuName: '부대찌개', energy: 590, carb: 48, prot: 30, fat: 28 },
+        { menuName: '파스타',   energy: 650, carb: 86, prot: 22, fat: 24 },
+        { menuName: '스테이크', energy: 580, carb:  8, prot: 48, fat: 38 },
+        { menuName: '쌀국수',   energy: 440, carb: 74, prot: 20, fat:  9 },
+        { menuName: '닭갈비',   energy: 680, carb: 82, prot: 44, fat: 22 },
+        { menuName: '소불고기', energy: 680, carb: 74, prot: 38, fat: 26 },
+        { menuName: '해물찜',   energy: 400, carb: 20, prot: 46, fat: 15 },
+        { menuName: '곱창전골', energy: 540, carb: 30, prot: 34, fat: 30 },
+        { menuName: '족발',     energy: 620, carb: 14, prot: 46, fat: 44 },
+        { menuName: '보쌈',     energy: 580, carb: 10, prot: 42, fat: 46 },
+        { menuName: '피자',     energy: 760, carb: 88, prot: 32, fat: 32 },
+      ];
+
+      // 지난주: 삼시세끼 다 먹지만 칼로리·영양소 모두 부족한 식단
+      // → 에너지·탄수화물·단백질·지방 모두 80% 기준 미달
+      const lightBreakfasts = [
+        { menuName: '커피',           energy: 110, carb: 20, prot:  2, fat:  4 },
+        { menuName: '아메리카노',     energy:  10, carb:  2, prot:  0, fat:  0 },
+        { menuName: '두유',           energy: 130, carb: 14, prot:  9, fat:  6 },
+        { menuName: '사과',           energy:  90, carb: 24, prot:  0, fat:  0 },
+        { menuName: '바나나',         energy: 100, carb: 26, prot:  1, fat:  0 },
+        { menuName: '에너지바',       energy: 180, carb: 28, prot:  5, fat:  6 },
+        { menuName: '크래커',         energy: 140, carb: 22, prot:  3, fat:  5 },
+      ];
+      const lightLunches = [
+        { menuName: '샐러드',         energy: 160, carb: 18, prot:  6, fat:  8 },
+        { menuName: '과일',           energy: 140, carb: 36, prot:  1, fat:  1 },
+        { menuName: '요거트',         energy: 170, carb: 28, prot:  8, fat:  4 },
+        { menuName: '두부샐러드',     energy: 180, carb: 12, prot: 14, fat:  9 },
+        { menuName: '콥샐러드',       energy: 210, carb: 14, prot: 16, fat: 12 },
+        { menuName: '스무디볼',       energy: 190, carb: 34, prot:  6, fat:  4 },
+        { menuName: '채소스틱',       energy: 120, carb: 16, prot:  3, fat:  6 },
+      ];
+      const lightDinners = [
+        { menuName: '미소국',         energy: 140, carb: 10, prot: 12, fat:  7 },
+        { menuName: '채소볶음',       energy: 160, carb: 16, prot:  5, fat:  9 },
+        { menuName: '계란찜',         energy: 130, carb:  2, prot: 12, fat:  8 },
+        { menuName: '된장국',         energy: 120, carb:  8, prot: 10, fat:  5 },
+        { menuName: '오이냉국',       energy:  60, carb: 10, prot:  2, fat:  1 },
+        { menuName: '탕수육',         energy: 220, carb: 20, prot: 12, fat: 10 },
+        { menuName: '군고구마',       energy: 180, carb: 42, prot:  2, fat:  1 },
+      ];
+
+      // ── 날짜 범위 생성 ────────────────────────────────────────────
+      const today     = new Date();
+      const thisMonday = getMonday(today);
+
+      // weekStart(offset): offset주 전 월요일 반환 (offset=0이면 이번 주 월요일)
+      function weekStart(offset) {
+        const d = new Date(thisMonday);
+        d.setDate(d.getDate() - offset * 7);
+        return d;
+      }
+
+      const records = [];
+
+      // 특정 한 주 전체에 걸쳐 삼시세끼 생성
+      // cutoff: 이 날 이후 식사는 추가 안 함 (미래 방지)
+      function fillWeek(monday, bf, lu, di, cutoff) {
+        for (let i = 0; i < 7; i++) {
+          const day = new Date(monday);
+          day.setDate(day.getDate() + i);
+          if (day > cutoff) break;
+          records.push({ date: dateAt(day,  7, 30), ...cycle(bf, i) });
+          records.push({ date: dateAt(day, 12, 30), ...cycle(lu, i) });
+          records.push({ date: dateAt(day, 18, 30), ...cycle(di, i) });
+        }
+      }
+
+      // 이번 주 (오늘까지만)
+      fillWeek(weekStart(0), breakfasts, lunches, dinners, today);
+      // 지난주 — 저영양 식단 (경고 메시지 테스트용)
+      fillWeek(weekStart(1), lightBreakfasts, lightLunches, lightDinners, thisMonday);
+      // 2주 전 — 정상
+      fillWeek(weekStart(2), breakfasts, lunches, dinners, weekStart(1));
+      // 3주 전 — 정상
+      fillWeek(weekStart(3), breakfasts, lunches, dinners, weekStart(2));
+      // 4주 전 — 정상
+      fillWeek(weekStart(4), breakfasts, lunches, dinners, weekStart(3));
+
+      localStorage.setItem('mealHistory', JSON.stringify(records));
+      lsShow(`주입 완료: ${records.length}건 (5주치)`, true);
+    }
+
+    function lsAdd() {
+      const dateVal = v('ls-date');
+      const menu    = v('ls-menu').trim();
+      if (!dateVal || !menu) { lsShow('날짜와 메뉴명을 입력하세요', false); return; }
+
+      const history = JSON.parse(localStorage.getItem('mealHistory') || '[]');
+      history.push({
+        date:     new Date(dateVal).toISOString(),
+        menuName: menu,
+        energy:   Number(v('ls-energy')) || 0,
+        carb:     Number(v('ls-carb'))   || 0,
+        prot:     Number(v('ls-prot'))   || 0,
+        fat:      Number(v('ls-fat'))    || 0,
+      });
+      localStorage.setItem('mealHistory', JSON.stringify(history));
+      lsShow(`추가 완료 (총 ${history.length}건)`, true);
+    }
+
+    function lsClear() {
+      localStorage.removeItem('mealHistory');
+      lsShow('초기화 완료', true);
+    }
+
+    function lsView() {
+      const data = JSON.parse(localStorage.getItem('mealHistory') || '[]');
+      lsShow(JSON.stringify(data, null, 2), data.length > 0);
+    }
+
+    function lsShow(text, ok) {
+      const pre = document.getElementById('res-ls');
+      pre.style.display = 'block';
+      pre.className = ok ? 'status-ok' : 'status-err';
+      pre.textContent = text;
+    }
+
+    // datetime-local 기본값을 현재 시각으로
+    (function () {
+      const now = new Date();
+      now.setSeconds(0, 0);
+      document.getElementById('ls-date').value =
+        now.toISOString().slice(0, 16);
+    })();
   </script>
 </body>
 </html>

@@ -2,18 +2,25 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>주간 식단</title>
+  <title>식단 분석</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-  <h1>주간 식단 분석</h1>
+  <h1>식단 분석</h1>
+
+  <div id="mode-toggle">
+    <button id="daily-btn">일간</button>
+    <button id="weekly-btn">주간</button>
+  </div>
 
   <div id="week-nav">
-    <button id="prev-week-btn">이전 주</button>
+    <button id="prev-week-btn">이전</button>
     <span id="week-label"></span>
-    <button id="next-week-btn">다음 주</button>
+    <button id="next-week-btn">다음</button>
   </div>
+
+  <div id="warning-container"></div>
 
   <div id="chart-container"></div>
 
