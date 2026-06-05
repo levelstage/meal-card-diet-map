@@ -131,7 +131,9 @@ body, html {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin: 0 0 1rem 0;
 }
+
 
 .store-name { 
     font-weight: bold; 
@@ -193,7 +195,17 @@ body, html {
     color: white;
 }
 
+/* 메뉴 검색란의 맨 윗줄 버튼 들어가는 줄 */
+.menus {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
 
+#register-btn {
+    margin-left: auto; 
+}
 /* icon button이랑 bottom button 한 줄에 몰아넣기용 */
 .buttonbtns {
     display: flex;

@@ -114,6 +114,7 @@ async function searchNutrition() {
   if (!keyword) return;
 
   const resultsDiv = document.getElementById('search-results');
+  resultsDiv.className = 'placeholder pulsate-fwd';
   resultsDiv.textContent = '검색 중...';
 
   try {
@@ -140,11 +141,14 @@ function renderSearchResults(menus) {
 
   menus.forEach(menu => {
     const div = document.createElement('div');
-    div.innerHTML = `
-      <span>${menu.menuName} | ${menu.energy ?? '-'}kcal - 탄 ${menu.carb ?? '-'}g - 단 ${menu.prot ?? '-'}g - 지 ${menu.fat ?? '-'}g</span>
-      <button class="register-btn">영양성분 가져오기</button>
+    div.innerHTML = `<div class="store-info fade-in">
+                <span class="store-name"> ${menu.menuName}</span>
+                <span class="store-distance-text">${menu.energy ?? '-'}kcal - 탄 ${menu.carb ?? '-'}g - 단 ${menu.prot ?? '-'}g - 지 ${menu.fat ?? '-'}g</span>
+              <button class="view-detail-btn" id="register-btn">사용하기</button>
+                </div>
+            
     `;
-    div.querySelector('.register-btn').addEventListener('click', () => registerMenu(menu));
+    div.querySelector('#register-btn').addEventListener('click', () => registerMenu(menu));
     resultsDiv.appendChild(div);
   });
 }
