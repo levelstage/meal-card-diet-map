@@ -28,6 +28,7 @@ async function loadStoreInfo() {
 
 function renderStore(s) {
   document.getElementById('store-name').textContent = s.mrhstNm ?? '이름 없음';
+  document.getElementById('store-name').className = "top-banner fade-in";
   document.getElementById('store-info').innerHTML = `
     <p>주소: ${s.rdnmadr || s.lnmadr || '-'}</p>
     <p>전화: ${s.phoneNumber || '-'}</p>

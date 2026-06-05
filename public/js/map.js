@@ -43,7 +43,7 @@ function renderStores(stores) {
     if (stores.length === 0) {
         storeListContainer.innerHTML = `
             <div class="store-item">
-                <div class="store-info">
+                <div class="store-info fade-in">
                     <span class="store-name">주변 1km 내에 가맹점이 존재하지 않습니다.</span>
                 </div>
             </div>`;
@@ -72,7 +72,7 @@ function renderStores(stores) {
         const item = document.createElement('div');
         item.className = 'store-item';
         item.innerHTML = `
-            <div class="store-info">
+            <div class="store-info fade-in">
                 <span class="store-name"> ${store.mrhstNm}</span>
                 <span class="store-distance-text">${store.displayDistance}m</span>
             </div>
@@ -93,14 +93,14 @@ function renderStores(stores) {
 
 async function fetchAndRender() {
     const center = map.getCenter();
-    storeListContainer.innerHTML = '<div class="store-item"><span class="store-name"> 가맹점 목록 로딩 중...</span></div>';
+    storeListContainer.innerHTML = '<div class="store-item"><span class="store-name placeholder pulsate-fwd"> 가맹점 목록 로딩 중...</span></div>';
     try {
         const res = await fetch(`/api/stores?lat=${center.getLat()}&lng=${center.getLng()}`);
         const data = await res.json();
         renderStores(data.nearbyStores);
     } catch (err) {
         console.error('가맹점 리스트 로딩 실패:', err);
-        storeListContainer.innerHTML = '<div class="store-item"><span class="store-name">❌ 가맹점 데이터를 불러오지 못했습니다.</span></div>';
+        storeListContainer.innerHTML = '<div class="store-item"><span class="store-name">가맹점 데이터를 불러오지 못했습니다.</span></div>';
     }
 }
 
@@ -120,9 +120,14 @@ if (navigator.geolocation) {
 const myLocationBtn = document.getElementById('myLocationBtn');
 myLocationBtn.addEventListener('click', () => {
     if (!navigator.geolocation) return;
-    myLocationBtn.innerText = '🔄';
+    myLocationBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+</svg>`;
     navigator.geolocation.getCurrentPosition((position) => {
         map.setCenter(new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude));
-        myLocationBtn.innerText = '🎯';
+        myLocationBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+</svg>`;
     });
 });

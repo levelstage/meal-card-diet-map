@@ -10,9 +10,12 @@
 
   <!-- 패널 1: 가맹점 정보 -->
   <div id="view-store">
-    <div id="store-name">불러오는 중...</div>
-    <div id="store-info"></div>
-    <button id="ate-btn">먹었어요</button>
+    <div class="top-banner placeholder pulsate-fwd"  id="store-name">불러오는 중...</div>
+    <div class="store-list-container slide-in-blurred-bottom">
+      <div id="store-info"></div>
+      <button class="bottom-btn" id="ate-btn">먹었어요</button>
+    </div>
+    
   </div>
 
   <!-- 패널 2: 메뉴 목록 -->
@@ -38,8 +41,8 @@
   </div>
 
   <nav class="bottom-nav">
-    <a href="/map">지도</a>
-    <a href="/diet">식단</a>
+    <button class="nav-btn active fade-in" onclick="location.href='/map'">지도</button>
+        <button class="nav-btn" onclick="location.href='/diet'">식단</button>
   </nav>
 
   <script src="/js/store.js"></script>
