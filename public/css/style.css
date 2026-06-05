@@ -1,25 +1,11 @@
 @import url('./animations.css');
 
-
-/* 전체 공통 레이아웃 */
-
-/* 지도 컨테이너 */
-
-/* 가맹점 메뉴 목록 */
-
-/* 영양정보 카드 */
-
-/* d3.js 차트 */
-
-/* 하단 네비게이션 */
-
-
 /* map.html.js 기본 레이아웃 설정 */
 body, html { 
     margin: 0; 
     padding: 0; 
     height: 100%; 
-    font-family: 'Malgun Gothic', sans-serif;
+    font-family: "IBM Plex Sans KR", sans-serif;
     overflow: hidden;
 }
 
@@ -47,9 +33,10 @@ body, html {
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     z-index: 10;
     font-weight: bold;
-    font-size: 1.3rem;
+    font-size: 1.7rem;
     text-align: center;
     color: #333;
+    font-family: "Do Hyeon", sans-serif;
 }
 
 /*  거리 조절 캡슐 버튼 컨테이너 디자인 */
@@ -95,18 +82,19 @@ body, html {
     transform: translateX(-50%);
     width: 90%;
     max-width: 400px;
-    height: 260px; 
+    height: 20.6rem; 
     background: white;
     border-radius: 15px;
     box-shadow: 0 -2px 15px rgba(0,0,0,0.15);
     z-index: 10;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 10px;
 }
 
 /* 영양성분 검색용 store-list-container */
 .container2 {
-    height: 360px; 
+    height: 23rem; 
     bottom: 20px; 
 }
 
@@ -130,6 +118,19 @@ body, html {
     transition: all 0.2s ease;
 }
 
+#warning-container {
+    background: #e8f5e9; 
+    color: #2e7d32; 
+    border: none;
+    padding: 0.4rem 0.8rem; 
+    border-radius: 15px; 
+    font-size: 0.8rem; 
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    height:3rem;
+    transition: all 0.2s ease;
+}
 /* store-list-container의 height를 늘린다 */
 .fullheight {
     height:calc(100% - 110px);
@@ -147,6 +148,7 @@ body, html {
 
 .store-item:last-child { border-bottom: none; }
 .store-item:hover { background-color: #f8f9fa; }
+
 
 .store-info {
     display: flex;
@@ -201,12 +203,13 @@ body, html {
     padding: 12px 12px; 
     border-radius: 15px; 
     width:100%;
-    font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
     height: 4rem;
     transition: all 0.2s ease;
     animation: blink-1 0.6s both;
+    font-family: "Do Hyeon", sans-serif;
+    font-size: 1.5rem;
 }
 
 
@@ -285,6 +288,8 @@ body, html {
     color: #888;
     cursor: pointer;
     transition: all 0.2s;
+    font-family: "Do Hyeon", sans-serif;
+    font-size: 1.7rem;
 }
 
 .nav-btn.active {
@@ -339,4 +344,71 @@ body, html {
 .my-location-btn:hover {
     background-color: #f5f5f5;
     transform: scale(1.05);
+}
+
+/* 전체를 감싸는 컨테이너 */
+.calendar-controls {
+    margin: auto;
+    align-self: center;
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* 상단 줄과 하단 줄 사이의 간격 */
+    width: 90%;
+    max-width: 400px; /* 화면에 맞게 너비 조절 */
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* 1. 상단 레이아웃: 요소들을 가로로 나열하고 가운데 정렬 */
+.date-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px; /* 버튼과 글자 사이의 간격 */
+}
+
+.date-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+
+/* 2. 하단 레이아웃: 일간/주간 버튼을 양옆 끝으로 배치 */
+.view-toggle {
+    display: flex;
+    width: 100%;
+}
+
+/* 일반 버튼 기본 스타일 */
+.nav-btn2 {
+    border: 1px solid #4CAF50;
+    background-color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+
+
+.toggle-btn {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #333333;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 50%;
+}
+
+.toggle-btn.is-active{
+    background: #4CAF50;
+}
+
+.bi:hover{
+    fill: #4CAF50;
 }

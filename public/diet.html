@@ -1,3 +1,7 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,25 +10,38 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
+  
   <h1 class="top-banner">식단 분석</h1>
 
-  <div id="mode-toggle">
-    <button id="daily-btn">일간</button>
-    <button id="weekly-btn">주간</button>
+<div class="calendar-controls fade-in" >
+  <div class="inputs" id="week-nav">
+    <button class="icon-btn" id="prev-week-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="white" class="bi bi-chevron-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+</svg>
+    </button>
+    <span class="date-text" id="week-label"></span>
+    <button class="icon-btn" id="next-week-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="white" class="bi bi-chevron-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+</svg>
+    </button>
   </div>
-
-  <div id="week-nav">
-    <button id="prev-week-btn">이전</button>
-    <span id="week-label"></span>
-    <button id="next-week-btn">다음</button>
+  
+  
+  <div class="view-toggle"  id="mode-toggle">
+    <button class="toggle-btn" id="daily-btn">일간</button>
+    <button class="toggle-btn active" id="weekly-btn">주간</button>
   </div>
-
+  <div class="store-list-container fade-in" style="height: 400px;">
+    <div id="chart-container"></div>
   <div id="warning-container"></div>
-
-  <div id="chart-container"></div>
-
-  <div id="timeline-container"></div>
+  <div id="timeline-container" ></div>
+  </div>
+  
+</div>
+  
+  
 
   <nav class="bottom-nav fade-in-f">
     <button class="nav-btn" onclick="location.href='/map'">지도</button>

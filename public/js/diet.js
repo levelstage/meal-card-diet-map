@@ -127,6 +127,7 @@ function render() {
   const offset = getCurrentOffset();
   const meals = getMealsForOffset(offset);
 
+  document.querySelector('.calendar-controls').className="calendar-controls";
   document.getElementById('week-label').textContent = getPeriodLabel();
 
   document.getElementById('prev-week-btn').disabled = getMealsForOffset(offset - 1).length === 0;
@@ -136,6 +137,12 @@ function render() {
   const weeklyBtn = document.getElementById('weekly-btn');
   dailyBtn.style.fontWeight = viewMode === 'day' ? 'bold' : 'normal';
   weeklyBtn.style.fontWeight = viewMode === 'week' ? 'bold' : 'normal';
+
+  dailyBtn.style.background = viewMode === 'day' ? '#4CAF50' : '#ffffff';
+  weeklyBtn.style.background = viewMode === 'week' ? '#4CAF50' : '#ffffff';
+
+  dailyBtn.style.color = viewMode === 'day' ? '#ffffff' : '#4CAF50';
+  weeklyBtn.style.color = viewMode === 'week' ? '#ffffff' : '#4CAF50';
 
   document.getElementById('chart-container').innerHTML = '';
   document.getElementById('timeline-container').innerHTML = '';
@@ -149,8 +156,10 @@ function render() {
     return;
   }
 
+
   renderGraph(meals);
   renderTimeline(meals);
+  document.querySelector('.calendar-controls').className="calendar-controls fade-in"
 }
 
 function renderGraph(meals) {
@@ -289,6 +298,7 @@ function renderTimeline(meals) {
   const container = document.getElementById('timeline-container');
 
   const heading = document.createElement('h2');
+  heading.style = "font-size:1.3rem;";
   heading.textContent = '식단 기록';
   container.appendChild(heading);
 
